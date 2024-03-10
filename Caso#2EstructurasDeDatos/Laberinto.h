@@ -2,6 +2,8 @@
 #include <iostream>
 #include <vector>
 using namespace std;
+#include "TxtFile.h"
+
 class Laberinto
 {
 	
@@ -9,37 +11,58 @@ class Laberinto
 		int t = 0;
 		int positionX, positionY, row, columns;
 		vector<vector<string>> mainMaze;
+		TxtFile ResultsFile; 
 
+		/**Usuario crea una matriz. Los par√°metros son las filas y columnas de tipo int*/
 		vector<vector<string>> CreateMaze(int row, int columns) {
 			vector<vector<string>> maze(row, vector<string>(columns));
 			string obj;
-			cout << "AcontinuaciÛn digite un punto(.) para representar caminos, X(equis) para representar obst·culos y t para representar un tesoro" << endl;
+			cout << "A continuaciÔøΩn digite un punto(.) para representar caminos, " 
+				<< "X(equis) para representar obstÔøΩculos "
+				<< "y t para representar un tesoro" << endl;
+			
+			/**Recorre la matriz para guardar los objetos x, t o .*/
 			for (int i = 0; i < row; i++) {
 				for (int j = 0; j < columns; j++) {
 					cout << "Ingrese la figura para la fila: " << i << " y columna: " << j << ": ";
 					cin >> obj;
+
+					/**Conteo de tesoros*/
 					if (obj == "t") {
 						t++;
 					}
 					cout << endl;
-
+					/**Ubicaci√≥n de x, t o . en la matriz*/
 					maze[i][j] = obj;
 				}
 
 			}
+			/** Guarda la matriz inicial */
 			mainMaze = maze;
+			/**Creaci√≥n del archivo de texto */
+    		ResultsFile.createFile(); 
+
+			/**Ingreso de matriz en el archivo de texto*/
+			ResultsFile.addMazeToFile(mainMaze); 
+			
+			/*Imprime la matriz*/
 			PrintMaze(mainMaze, row);
 			return maze;
 		}
 		
 		void PrintMaze(vector<vector<string>> maze, int row) {
+
+			cout<<"------------------------------------" <<endl; 
+			cout<<"Este es el laberinto" <<endl; 
+			cout<<"------------------------------------" <<endl; 
+
 			for (int i = 0; i < row; i++) {
 				for (int j = 0; j < maze[i].size(); j++) {
 					cout << maze[i][j];
 				}
 				cout << endl;
 			}
-			
+			cout<<"------------------------------------" <<endl; 
 		}
 
 		void Play(vector<vector<string>> maze, int row) {
@@ -51,78 +74,74 @@ class Laberinto
 				cout << " " << endl;
 				PrintMaze(maze, row);
 				cout << " " << endl;
-				cout << "AcontinuaciÛn ingrese las posiciones para comenzar a jugar (Y)" << endl;
-				cout << "Ingrese la posiciÛn X: ";
+				cout << "AcontinuaciÔøΩn ingrese las posiciones para comenzar a jugar (Y)" << endl;
+				cout << "Ingrese la posiciÔøΩn X: ";
 				cin >> positionX;
-				cout << "Ingrese la posiciÛn Y: ";
+				cout << "Ingrese la posiciÔøΩn Y: ";
 				cin >> positionY;
 				if (maze[positionX][positionY] != ".") {
-					cout << "Debe comenzar en una posiciÛn diferente de 'X' o 't'" << endl;
+					cout << "Debe comenzar en una posiciÔøΩn diferente de 'X' o 't'" << endl;
 				}
 				else {
 					maze[positionX][positionY] = "Y";
 					out = true;
 				}
 			} while (!out);
-			
-			
-			
 
-				do {
-					for (int i = 0; i < row; i++) {
-						for (int j = 0; j < maze[i].size(); j++) {
+			do {
+				for (int i = 0; i < row; i++) {
+					for (int j = 0; j < maze[i].size(); j++) {
 
-							cout << maze[i][j];
-						}
-						cout << endl;
+						cout << maze[i][j];
 					}
-					cout << "Debe moverse a travÈs de la fila o de la columna, digite: " << endl;
-					cout << "1. Si se desea mover a travÈs de la fila\n2. Si se desea mover a travÈs de la columna\n3. Salir" << endl;
-					cout << "Escoja una opciÛn: ";
-					cin >> option;
-					if (option == 1) {
-						cout << "Ingrese la columna a la que desea moverse: ";
-						previous = positionY;
-						cin >> positionY;
-						if (maze[positionX][positionY] == "x") {
-							cout << "La posiciÛn que ingreso es inv·lida"<<endl;
-							positionY = previous;
+					cout << endl;
+				}
+				cout << "Debe moverse a travÔøΩs de la fila o de la columna, digite: " << endl;
+				cout << "1. Si se desea mover a travÔøΩs de la fila\n2. Si se desea mover a travÔøΩs de la columna\n3. Salir" << endl;
+				cout << "Escoja una opciÔøΩn: ";
+				cin >> option;
+				if (option == 1) {
+					cout << "Ingrese la columna a la que desea moverse: ";
+					previous = positionY;
+					cin >> positionY;
+					if (maze[positionX][positionY] == "x") {
+						cout << "La posiciÔøΩn que ingreso es invÔøΩlida"<<endl;
+						positionY = previous;
+					}
+					else {
+						if (maze[positionX][positionY] == "t") {
+							cout << "ÔøΩUsted encontrÔøΩ un tesoro!" << endl;
+							cout << endl;
+							treasures++;
 						}
-						else {
-							if (maze[positionX][positionY] == "t") {
-								cout << "°Usted encontrÛ un tesoro!" << endl;
-								cout << endl;
-								treasures++;
+						maze[positionX][previous] = ".";
+						maze[positionX][positionY] = "Y";
+					}
+				}
+				if (option == 2) {
+					cout << "Ingrese la fila a la que desea moverse: ";
+					previous = positionX;
+					cin >> positionX;
+					if (maze[positionX][positionY] == "x") {
+						cout << "La posiciÔøΩn que ingreso es invÔøΩlida"<<endl;
+						positionX = previous;
+					}
+					else {
+						if (maze[positionX][positionY] == "t") {
+							cout << "ÔøΩUsted encontrÔøΩ un tesoro!" << endl;
+							cout << endl;
+							treasures++;
+						}
+						maze[previous][positionY] = ".";
+						maze[positionX][positionY] = "Y";
+					}
 
-							}
-							maze[positionX][previous] = ".";
-							maze[positionX][positionY] = "Y";
-						}
-					}
-					if (option == 2) {
-						cout << "Ingrese la fila a la que desea moverse: ";
-						previous = positionX;
-						cin >> positionX;
-						if (maze[positionX][positionY] == "x") {
-							cout << "La posiciÛn que ingreso es inv·lida"<<endl;
-							positionX = previous;
-						}
-						else {
-							if (maze[positionX][positionY] == "t") {
-								cout << "°Usted encontrÛ un tesoro!" << endl;
-								cout << endl;
-								treasures++;
-							}
-							maze[previous][positionY] = ".";
-							maze[positionX][positionY] = "Y";
-						}
-
-					}
-					if (treasures == t) {
-						cout << "Todos los tesoros fueron encontrados" << endl;
-						option = 3;
-					}
-				} while (option < 3);			
+				}
+				if (treasures == t) {
+					cout << "Todos los tesoros fueron encontrados" << endl;
+					option = 3;
+				}
+			} while (option < 3);			
 				
 		}
 
@@ -137,8 +156,12 @@ class Laberinto
 			do {
 				cout << "\n1. Crear laberinto" << endl;
 				cout << "2. Jugar" << endl;
-				cout << "3. Salir" << endl;
-				cout << "Escoja una opciÛn: ";
+				cout << "3. Informaci√≥n del archivo de texto" << endl;
+				cout << "4. Conclusiones" << endl;
+				cout << "5. Salir" << endl;
+
+
+				cout << "Escoja una opciÔøΩn: ";
 				cin >> option;
 				switch (option) {
 				case 1:
@@ -147,10 +170,28 @@ class Laberinto
 				case 2:
 					Play(mainMaze, row);
 					break;
+				case 3:
+					ResultsFile.printTxtFile();
+					break;
+				case 4:
+					cout<<endl; 
+					cout<<"Conclusiones"<<endl; 
+					cout<<"1. Para la resoluci√≥n de un problema es importante analizar el contexto y crear un logaritmo que contemple todas las aristas posibles." 
+							<<"En el caso particular de este problema, es vital considerar que el agente podr√≠a desplazarse en cuatro sentidos, para evitar dar falsos negativos."<<endl;
+					cout<<"2. La naturaleza de los archivos de texto, no permiten modificar informaci√≥n."
+							<<"Por tanto, para su modificaci√≥n se debe guardar en memoria temporal la informaci√≥n del archivo, "
+							<<"hacer las modificaciones y luego guardar la informaci√≥n modificada en el archivo nuevamente."<<endl; 
+					cout<<"3. El uso de matrices es muy √∫til, porque nos permite tener, presentar y manipular objetos que est√°n relacionados. "
+							<<"Adem√°s, las matrices son ideales para las representaciones gr√°ficas como juegos de tableros. "<<endl; 
+
+					break;
 				}
-			} while (option < 3);
+			} while (option < 5);
 		}
+
+	
 };
+
 
 
 
