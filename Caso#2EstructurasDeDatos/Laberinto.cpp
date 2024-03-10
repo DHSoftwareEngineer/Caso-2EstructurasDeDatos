@@ -1,14 +1,12 @@
 #include <iostream>
 #include <vector>
 using namespace std;
-#include "Laberinto.h"
+#include "Laberinto2.h"
 
 
 int main(){
     
-    Laberinto Maze; 
+    Laberinto2 Maze; 
     Maze.Menu();
-    
-
     return 0; 
 }

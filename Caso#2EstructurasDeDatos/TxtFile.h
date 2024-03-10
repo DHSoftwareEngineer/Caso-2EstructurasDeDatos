@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include "Casilla.h"
 
 
 using namespace std;
@@ -23,7 +24,7 @@ class TxtFile
         outFile.close(); 
     }
 
-    void addMazeToFile(vector<vector<string>> mainMaze){
+    void addMazeToFile(vector<vector<Casilla>> mainMaze){
         outFile.open(filename); 
         mazeX = mainMaze.size(); 
         mazeY = mainMaze[0].size(); 
